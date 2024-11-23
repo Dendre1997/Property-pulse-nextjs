@@ -9,6 +9,7 @@ import { FaGoogle } from 'react-icons/fa'
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation'
+import UnreadMessageCount from './UnreadMesageCount'
 
 const Navbar = () => {
   const { data: session } = useSession()
@@ -17,8 +18,6 @@ const Navbar = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [providers, setProviders] = useState(null)
   const pathName = usePathname()
-//   console.log('Client ID:', process.env.GOOGLE_CLIENT_ID);
-// console.log('Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
   useEffect(() => {
     const setAuthProviders = async () => {
@@ -31,7 +30,7 @@ const Navbar = () => {
 
 
     return ( 
-        <nav className="bg-blue-700 border-b border-blue-500">
+        <nav className="bg-blue-700 border-b border-blue-500" >
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-20 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center md:hidden">
@@ -148,12 +147,7 @@ const Navbar = () => {
                   />
                 </svg>
               </button>
-              <span
-                className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"
-              >
-                2
-                {/* <!-- Replace with the actual number of notifications --> */}
-              </span>
+              <UnreadMessageCount/>
             </Link>
             {/* <!-- Profile dropdown button --> */}
             <div className="relative ml-3">
