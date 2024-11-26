@@ -1,5 +1,6 @@
 import connecteDB from "@/config/database";
 import Message from '@/models/Message';
+import User from "@/models/User";
 import '@/models/Property';
 import { converToSerealizableObject } from "@/utils/convertToObject";
 import { getSessionUser } from "@/utils/getSessionUser";
@@ -9,8 +10,15 @@ const MessagesPage = async () => {
     const sessionUser = await getSessionUser();
 
     const { userId } = sessionUser;
-
-    const readMessages = await Message.find({ recipient: userId, read: true  })
+    const userDoc = await User.findById(userId).lean()
+    
+    
+    const user = {
+        email: userDoc.email,
+        name: userDoc.username
+    }
+    
+    const readMessages = await Message.find({ recipient: userId, read: true })
         .sort({ createdAt: -1 })
         .populate('sender', 'username')
         .populate('property', 'name')
@@ -24,10 +32,14 @@ const MessagesPage = async () => {
 
     const messages = [...unreadMessages, ...readMessages].map((messageDoc) => {
         const message = converToSerealizableObject(messageDoc);
-        message.sender = converToSerealizableObject(messageDoc.sender)
+        message.sender = converToSerealizableObject(messageDoc.sender);
         message.property = converToSerealizableObject(messageDoc.property)
+        message._id = converToSerealizableObject(messageDoc._id)
         return message
     });
+    // const replyToSenderDoc = User.findById(messages.sender)
+    // console.log(messages)
+    // const replyRecipient = await User.findById(messages.sender)
     return ( 
         <section className="bg-blue-50">
             <div className="container m-auto py-24 max-w-6xl">
@@ -36,7 +48,7 @@ const MessagesPage = async () => {
                     <div className="space-y-4">
                         {messages.length === 0 ? (<p>You Don't Have Any Messages</p>) : (
                             messages.map((message) => (
-                                <MessageCard key={message._id} message={message} />
+                                <MessageCard key={message._id} message={message} user={user} />
                             ))
                         )}
                     </div>
@@ -60,8 +72,8 @@ export default MessagesPage;
 // 1 - Create page /messages/[reply],
 // layout style: <section className="bg-blue-50">
             // <div className="container m-auto py-24 max-w-6xl">
-{/* <recMessages className="w-100% flex"><left bg-gray></></left>  */}
-{/* <sentMessages className="w-100% flex "><right bg-blue></right> */ }
+/* <recMessages className="w-100% flex"><left bg-gray></></left>  */
+/* <sentMessages className="w-100% flex "><right bg-blue></right> */ 
 // sorted by date
 
 // create form hidden textfield with user info &&  text field for reply to sender,

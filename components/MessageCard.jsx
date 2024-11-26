@@ -4,11 +4,14 @@ import { toast } from 'react-toastify'
 import markMessageAsRead from '@/app/actions/markMessageAsRead';
 import deleteMessage from '@/app/actions/deleteMessage';
 import { useGlobalContext } from '@/context/GlobalContext';
+import ReplyMessage from './ReplyMessage';
+import Link from 'next/link';
 
 
-const MessageCard = ({ message }) => {
+const MessageCard = ({ message, user }) => {
     const [isRead, setIsRead] = useState(message.read)
     const [isDeleted, setIsDeleted] = useState(false)
+    const [isReplyOpen, setIsReplyOpen] = useState(false)
 
     const {setUnreadCount} = useGlobalContext()
     const recivedDate = useMemo(() => {
@@ -28,6 +31,10 @@ const MessageCard = ({ message }) => {
         setUnreadCount((prevCount) => (isRead ? prevCount: prevCount - 1) )
         toast.success('Message Deleted')
     }
+    const handleReplyClick = (e) => {
+        e.preventDefault()
+        setIsReplyOpen((prev) => !prev)
+    }
     if (isDeleted) {
         return <p>Deleted Message</p>
     }
@@ -37,7 +44,7 @@ const MessageCard = ({ message }) => {
                 {!isRead && (
                     <div className='absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-md'>New</div>
                 )}
-                <span className='font-bold'>Property Inqury: </span> {' '}  {message.property.name}
+                <span className='font-bold'>Property Inqury: </span> {' '}  <Link href={`/properties/${message.property._id}`}>{message.property.name}</Link>
             </h2>
             <p className="text-gray-700">{message.body}</p>
             <ul className="mt-4">
@@ -58,6 +65,10 @@ const MessageCard = ({ message }) => {
                 {isRead === true ? 'Mark As New' : 'Mark As Read'}
             </button>
             <button className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md" onClick={handleDeleteClick}>Delete</button>
+            <button className="mt-4 ml-3 bg-green-500 text-white py-1 px-3 rounded-md" onClick={handleReplyClick}>{!isReplyOpen ? 'Reply' : 'Close' }</button>
+            {isReplyOpen && (   
+            <ReplyMessage key={message._id} message={message} user={user} />
+            )}
         </div>
      );
 }
