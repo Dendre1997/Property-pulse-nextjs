@@ -34,7 +34,7 @@ const PropertyCard = ({ property }) => {
                     <h3 className="text-xl font-bold">{ property.name }</h3>
               </div>
               <h3
-                className="absolute top-[10px] right-[10px] bg-white px-4 py-2 rounded-lg text-blue-500 font-bold text-right md:text-center lg:text-right"
+                className="absolute top-[30px] left-[10px] bg-white px-4 py-2 rounded-lg text-blue-500 font-bold text-right md:text-center lg:text-right"
               >
                 { getRateDisplay() }
               </h3>
@@ -46,7 +46,7 @@ const PropertyCard = ({ property }) => {
                 </p>
                 <p>
                   <FaBath className='md:hidden lg:inline'/> {property.baths} {' '}
-                  <span className="md:hidden lg:inline">Baths</span>
+                  <span className="md:hidden lg:inline">Baths</span> 
                 </p>
                 <p>
                   <FaRulerCombined className='md:hidden lg:inline'/>
@@ -57,8 +57,9 @@ const PropertyCard = ({ property }) => {
               <div
                 className="flex justify-center gap-4 text-green-900 text-sm mb-4"
               >
-                <p><FaMoneyBill className='md:hidden lg:inline'></FaMoneyBill> Weekly</p>
-                <p><FaMoneyBill className='md:hidden lg:inline'></FaMoneyBill> Monthly</p>
+            {property.rates.monthly && (<p><FaMoneyBill className='md:hidden lg:inline'></FaMoneyBill> Monthly</p>)}
+            {property.rates.weekly && (<p><FaMoneyBill className='md:hidden lg:inline'></FaMoneyBill> Weekly</p>)}
+            {property.rates.nightly && (<p><FaMoneyBill className='md:hidden lg:inline'></FaMoneyBill> Nightly</p>)}
               </div>
 
               <div className="border border-gray-100 mb-5"></div>

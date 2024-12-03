@@ -5,6 +5,7 @@ import connectDB from '@/config/database'
 import Property from '@/models/Property'
 import { getSessionUser } from '@/utils/getSessionUser'
 import { revalidatePath } from 'next/cache'
+import Message from "@/models/Message"
 
 async function deleteProperty(propertyId) {
     const sessionUser = await getSessionUser();
@@ -40,6 +41,11 @@ async function deleteProperty(propertyId) {
         }
     }
 
+    try {
+        await Message.deleteMany({ property: propertyId });
+    } catch (error) {
+        console.error(`Failed to delete messages for propertyId: ${propertyId}`, error);
+    }
     await property.deleteOne()
 
     

@@ -14,7 +14,6 @@ const PropertyPage = async ({ params }) => {
     await connecteDB()
     const propertyDoc = await Property.findById(params.id).lean()
   const property = converToSerealizableObject(propertyDoc)
-  console.log(property)
   if (!property) {
     return (<h1 className='text-center text-2xl font-bold mt-10'>Property Not Found</h1>)
   }
